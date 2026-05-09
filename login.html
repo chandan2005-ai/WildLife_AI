@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WildGuard - Login</title>
+    <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container glass-card">
+        <div class="text-center mb-4">
+            <img src="/static/images/wildguard-logo.svg" alt="WildGuard" width="80">
+            <h2 class="mt-2">WildGuard AI</h2>
+            <p class="text-muted">IoT Wildlife Monitoring System</p>
+        </div>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="/register" class="text-decoration-none">Create Account</a> |
+            <a href="/forgot-password" class="text-decoration-none">Forgot Password?</a>
+        </div>
+        <div id="loginAlert" class="mt-3"></div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('wildguard_user', data.user);
+                window.location.href = '/';
+            } else {
+                document.getElementById('loginAlert').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
